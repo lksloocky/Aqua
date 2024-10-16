@@ -55,5 +55,37 @@ class Chain
     }
   }
   
+  void fabrikResove(PVector pos, PVector anchor)
+  {
+    //passo frente
+    joints.set(0, pos);
+    for(int i = 1; i < joints.size(); i++)
+    {
+      joints.set(i, constrainDistance(joints.get(i). joints.get(i + 1), linkSize));
+    }
+    
+    //passo tras
+    for(int i = joints.size() - 2; i >= 0; i--)
+    {
+      joints.set(i, constrainDistance(joints.get(i). joints.get(i + 1). linkSize));
+    }
+  }
   
+  void display()
+  {
+    strokeWeight(8);
+    stroke(255);
+    for(int i = 0; i < joints.size() - 1; i++)
+    {
+      PVector startJoint = joints.get(i);
+      PVector endJoint = joints.get(i + 1);
+      line(startJoint.x, startJoint.y, endJoint.x, endJoint.y);
+    }
+    
+    fill(42, 44, 53);
+    for(PVector joint : joints)
+    {
+      ellipse(joint.x, joint.y, 32, 32);
+    }
+  }
 }
