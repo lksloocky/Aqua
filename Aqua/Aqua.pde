@@ -89,3 +89,26 @@ class Chain
     }
   }
 }
+
+
+
+
+class Fish
+{
+  Chain spine;
+  
+  color bodyColor = color(58, 124, 165);
+  color finColor = color(129, 195, 215);
+  
+  //tamanho de cada vertebra
+  float[] bodyWidth = {68, 81, 84, 83, 77, 64, 51, 38, 32, 19};
+  
+  Fish(PVector origin)
+  {
+    //12 segmentos, primeiros 10 para corpo e ultimos 2 para calda
+    spine = new Chain(origin, 12, 64, PI/8);
+  }
+  
+  void resolve()
+  {}
+}
