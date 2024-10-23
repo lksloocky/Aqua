@@ -1,8 +1,7 @@
 import processing.javafx.*;
 
 Fish fish;
-
-int animal;
+boolean girar = false;
 
 void setup()
 {
@@ -11,27 +10,21 @@ void setup()
   fish = new Fish(new PVector(width/2, height/2));
 
 
-  animal = 0;
 }
 
-void draw() {
+void draw() 
+{
   background(40, 44, 52);
 
-  switch (animal) 
-  {
-  case 0:
-    fish.resolve();
-    fish.display();
-    break;
-  }
+    fish.resolve();//comportamento
+    fish.display();//aparencia
+
 }
+
 
 void mousePressed()
 {
-  if (++animal > 2) 
-  {
-    animal = 0;
-  }
+  girar = false;
 }
 
 
@@ -62,6 +55,10 @@ class Chain {
     }
   }
 
+
+
+
+
   void resolve(PVector pos) 
   {
     angles.set(0, PVector.sub(pos, joints.get(0)).heading());
@@ -73,6 +70,11 @@ class Chain {
       joints.set(i, PVector.sub(joints.get(i - 1), PVector.fromAngle(angles.get(i)).setMag(linkSize)));
     }
   }
+
+
+
+
+
 
   void fabrikResolve(PVector pos, PVector anchor) 
   {
@@ -119,8 +121,13 @@ class Chain {
  {
   Chain spine;
   
-  color bodyColor = color(58, 124, 165);
-  color finColor = color(129, 195, 215);
+  color bodyColor = color(150, 150, 150);
+  color finColor = color(255, 100, 0);
+ 
+  
+  
+  float angleOffset = 0; // Variável para controlar o ângulo do movimento circular
+  float radius = 100; // Raio do círculo
   
   //tamanho de cada vertebra
   float[] bodyWidth = {68, 81, 84, 83, 77, 64, 51, 38, 32, 19};
@@ -131,13 +138,54 @@ class Chain {
     spine = new Chain(origin, 12, 64, PI/8);
   }
   
+  
+  
+  
+  
+  
+  
+  
+  
+  //comportamento *********************************
   void resolve()
   {
-    PVector headPos = spine.joints.get(0);
-    PVector mousePos = new PVector(mouseX, mouseY);
-    PVector targetPos = PVector.add(headPos, PVector.sub(mousePos, headPos).setMag(16));
-    spine.resolve(targetPos);
+    
+    if(!girar)
+    {
+      PVector headPos = spine.joints.get(0);
+      PVector mousePos = new PVector(mouseX, mouseY);
+      PVector targetPos = PVector.add(headPos, PVector.sub(mousePos, headPos).setMag(16));
+      spine.resolve(targetPos);
+      if(targetPos.dist(mousePos) < 10.0) girar = true;
+      
+    }
+    
+    if(girar)
+    {
+      
+        float x = mouseX + cos(angleOffset) * (radius + 50); // Usar o centro da tela como referência
+        float y = mouseY + sin(angleOffset) * (radius + 50);
+
+        // Atualizar a posição do ângulo para a próxima iteração
+        angleOffset += 0.06; // Controlar a velocidade de rotação
+
+        // Resolvendo a posição da cadeia
+        spine.resolve(new PVector(x, y));
+      
+    }
+
+     
+    
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   void display()
   {
