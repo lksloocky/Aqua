@@ -127,7 +127,7 @@ class Chain {
   
   
   float angleOffset = 0; // Variável para controlar o ângulo do movimento circular
-  float radius = 100; // Raio do círculo
+  float radius = 400; // Raio do círculo
   
   //tamanho de cada vertebra
   float[] bodyWidth = {68, 81, 84, 83, 77, 64, 51, 38, 32, 19};
@@ -155,7 +155,14 @@ class Chain {
       PVector headPos = spine.joints.get(0);
       PVector mousePos = new PVector(mouseX, mouseY);
       PVector targetPos = PVector.add(headPos, PVector.sub(mousePos, headPos).setMag(16));
-      spine.resolve(targetPos);
+      
+      // Suavizar a transição para a nova posição
+        float smoothFactor = 0.9; // Controle de suavidade
+        float x = lerp(headPos.x, targetPos.x, smoothFactor);
+        float y = lerp(headPos.y, targetPos.y, smoothFactor);
+        
+      spine.resolve(new PVector(x, y));
+      
       if(targetPos.dist(mousePos) < 10.0) girar = true;
       
     }
@@ -163,8 +170,16 @@ class Chain {
     if(girar)
     {
       
-        float x = mouseX + cos(angleOffset) * (radius + 50); // Usar o centro da tela como referência
-        float y = mouseY + sin(angleOffset) * (radius + 50);
+// Calcular a nova posição circular
+        float targetX = mouseX + cos(angleOffset) * radius; // Posição circular
+        float targetY = mouseY + sin(angleOffset) * radius; // Posição circular
+
+        // Suavizar a transição para a nova posição
+        PVector currentPos = spine.joints.get(0);
+        float smoothFactor = 0.1; // Controle de suavidade
+        float x = lerp(currentPos.x, targetX, smoothFactor);//A função lerp() é usada para interpolar suavemente
+        float y = lerp(currentPos.y, targetY, smoothFactor);
+
 
         // Atualizar a posição do ângulo para a próxima iteração
         angleOffset += 0.06; // Controlar a velocidade de rotação
@@ -173,8 +188,6 @@ class Chain {
         spine.resolve(new PVector(x, y));
       
     }
-
-     
     
   }
   
